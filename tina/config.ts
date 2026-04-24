@@ -31,6 +31,7 @@ export default defineConfig({
   build: {
     outputFolder: "admin-tina",
     publicFolder: "public",
+    basePath: "tina-playground-unesco",
   },
 
   media: {
