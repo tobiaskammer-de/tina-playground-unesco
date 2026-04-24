@@ -1,9 +1,9 @@
 import { defineConfig } from "astro/config";
 
-// Kein base-Pfad hier — damit Tinas Admin unter /admin-tina/ funktioniert.
-// GitHub Pages User-Page (username.github.io/repo) braucht zwar einen base,
-// aber für den Tina-Test reicht lokaler Dev-Server an localhost:4321/.
+// GitHub Pages: username.github.io/repo → base-path erforderlich
 export default defineConfig({
+  site: "https://tobiaskammer-de.github.io",
+  base: "/tina-playground-unesco",
   trailingSlash: "ignore",
   build: {
     format: "directory",

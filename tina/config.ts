@@ -19,8 +19,13 @@ const branch =
 
 export default defineConfig({
   branch,
-  // Leer lassen = Local-Modus (keine Cloud-Auth nötig für Demo).
-  clientId: process.env.TINA_CLIENT_ID || "",
+  // Tina Cloud Credentials (für Browser-Editing auf der deployten Seite).
+  // Lokal leer lassen = Local-Modus läuft über npm run tina:dev.
+  clientId:
+    process.env.TINA_PUBLIC_CLIENT_ID ||
+    process.env.NEXT_PUBLIC_TINA_CLIENT_ID ||
+    process.env.TINA_CLIENT_ID ||
+    "",
   token: process.env.TINA_TOKEN || "",
 
   build: {
