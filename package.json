@@ -6,17 +6,11 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview",
-    "tina:dev": "tinacms dev -c \"astro dev\"",
-    "tina:build": "tinacms build"
+    "preview": "astro preview"
   },
   "dependencies": {
     "@fontsource/fraunces": "^5.1.0",
     "@fontsource/inter": "^5.1.0",
     "astro": "^5.0.0"
-  },
-  "devDependencies": {
-    "@tinacms/cli": "^2.2.3",
-    "tinacms": "^3.7.3"
   }
 }
