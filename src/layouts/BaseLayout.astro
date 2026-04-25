@@ -12,9 +12,10 @@ interface Props {
   description?: string;
 }
 const {
-  title = "Tina-Playground · UNESCO-Schule Essen",
-  description = "TinaCMS Block-Editor Testbed im CD der UNESCO-Schule Essen.",
+  title = "CMS-Playground · UNESCO-Schule Essen",
+  description = "Decap-CMS Block-Editor Testbed im CD der UNESCO-Schule Essen.",
 } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 ---
 <!DOCTYPE html>
 <html lang="de">
@@ -149,10 +150,10 @@ const {
   <header class="site-header">
     <div class="header-inner">
       <div>
-        <span class="logo-text">Tina-Playground</span>
+        <span class="logo-text">CMS-Playground</span>
         <span class="logo-sub">UNESCO-Schule Essen</span>
       </div>
-      <span class="header-note">Testumgebung — <a href="/admin-tina">Tina-Editor öffnen</a></span>
+      <span class="header-note">Testumgebung — <a href={`${base}/admin/`}>Decap-Editor öffnen</a></span>
     </div>
   </header>
 
@@ -160,9 +161,23 @@ const {
 
   <footer class="site-footer">
     <div class="container">
-      <p>Tina-Playground · reines Test-Projekt zum Evaluieren des Block-Editors</p>
+      <p>CMS-Playground · reines Test-Projekt zum Evaluieren von Decap CMS</p>
       <p>Design-Tokens aus <a href="https://tobiaskammer-de.github.io/unesco-schule-essen-homepage" target="_blank" rel="noopener">unesco-schule-essen.de</a></p>
     </div>
   </footer>
+
+  <!-- Netlify Identity Widget: erkennt Invite/Recovery-Tokens und leitet nach Login zu /admin/ -->
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <script is:inline define:vars={{ base }}>
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.on("init", (user) => {
+        if (!user) {
+          window.netlifyIdentity.on("login", () => {
+            document.location.href = base + "/admin/";
+          });
+        }
+      });
+    }
+  </script>
 </body>
 </html>

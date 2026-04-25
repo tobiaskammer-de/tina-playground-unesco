@@ -1,4 +1,4 @@
-name: Deploy Tina-Playground to GitHub Pages
+name: Deploy to GitHub Pages
 
 on:
   push:
@@ -17,11 +17,6 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      TINA_PUBLIC_CLIENT_ID: ${{ secrets.TINA_PUBLIC_CLIENT_ID }}
-      TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
-      NEXT_PUBLIC_TINA_CLIENT_ID: ${{ secrets.TINA_PUBLIC_CLIENT_ID }}
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -33,13 +28,6 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-
-      - name: Build Tina admin (if Tina Cloud configured)
-        # Läuft nur, wenn das Repo-Secret TINA_PUBLIC_CLIENT_ID gesetzt ist.
-        # Ohne Tina Cloud wird der Schritt übersprungen — die Site
-        # deployt dann ohne funktionale Admin-UI.
-        if: env.TINA_PUBLIC_CLIENT_ID != ''
-        run: npm run tina:build
 
       - name: Build Astro site
         run: npx astro build

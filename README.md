@@ -1,111 +1,98 @@
-# Tina-Playground — UNESCO-Schule Essen
+# CMS-Playground — UNESCO-Schule Essen
 
-Test-Projekt zum Evaluieren des **TinaCMS Block-Editors**, im Corporate Design der UNESCO-Schule Essen.
+Test-Projekt zum Evaluieren von **Decap CMS** (ehemals Netlify CMS), im Corporate Design der UNESCO-Schule Essen.
 
 ## Drei Arten, das zu nutzen
 
 ### 1. Lokal testen (ohne Account)
 
-Editor läuft auf deinem Mac, Änderungen gehen in die lokalen Markdown-Dateien.
-
 ```bash
-cd ~/Desktop/tina-playground
 npm install
-npm run tina:dev
+# Terminal 1
+npx decap-server
+# Terminal 2
+npm run dev
 ```
 
-Browser öffnen:
+Browser:
 - **Website:** http://localhost:4321/tina-playground-unesco/
-- **Editor:** http://localhost:4321/tina-playground-unesco/admin-tina
+- **Editor:** http://localhost:4321/tina-playground-unesco/admin/
+
+`local_backend: true` ist in `public/admin/config.yml` gesetzt — der Decap-Proxy schreibt direkt in die lokalen Markdown-Dateien, kein Login noetig.
 
 ### 2. Live auf GitHub Pages (read-only)
 
-Die gebaute Website ist öffentlich unter
 https://tobiaskammer-de.github.io/tina-playground-unesco/
 
-Bearbeitung ist erst möglich, wenn Tina Cloud eingerichtet ist (siehe unten).
+Bearbeitung im Browser ist hier **nicht** moeglich — GitHub Pages hat kein Auth-Backend. Dafuer Variante 3.
 
-### 3. Browser-Editing via Tina Cloud (einmaliges Setup, dann bequem)
+### 3. Browser-Editing via Netlify (einmaliges Setup)
 
-Nach dem Setup bearbeitest du die Seite **direkt im Browser**, ohne lokales Terminal.
+Netlify hostet die Site zusaetzlich, liefert per **Identity + Git Gateway** den Login. Geschrieben wird trotzdem in dasselbe GitHub-Repo.
 
-## Tina Cloud Setup (5 Minuten, kostenlos für 2 Editoren)
+## Netlify-Setup (ca. 5 Minuten, kostenlos)
 
-### Schritt 1 — Account anlegen
+### Schritt 1 — Account + Site
 
-1. Öffne https://app.tina.io
-2. „Sign up with GitHub" → autorisiere Tina auf GitHub
-3. Neues Projekt erstellen („+ New Project")
-4. GitHub-Repo auswählen: `tobiaskammer-de/tina-playground-unesco`
-5. Branch: `main`
-6. Framework: „Astro"
+1. https://app.netlify.com → „Sign up with GitHub"
+2. „Add new site" → „Import an existing project" → GitHub → Repo `tina-playground-unesco` auswaehlen
+3. Build-Settings sind in `netlify.toml` schon hinterlegt — auf „Deploy site" klicken
+4. Warten, bis die erste Site deployt ist (~1 Min). Du bekommst eine URL wie `https://random-name.netlify.app`
 
-### Schritt 2 — Credentials kopieren
+### Schritt 2 — Identity aktivieren
 
-Nach der Projekterstellung zeigt Tina dir zwei Werte:
+1. Im Netlify-Dashboard: **Site configuration → Identity → Enable Identity**
+2. Unter **Registration preferences** auf „Invite only" stellen (sonst kann sich jeder anmelden)
+3. Unter **External providers** optional „GitHub" hinzufuegen — dann Login per GitHub statt E-Mail
 
-- **Client ID** (beginnt mit etwas wie `abc123de-...`) — öffentlich, geht ins Build
-- **Read-Only Token** (lang, geheim) — darf nie öffentlich sein
+### Schritt 3 — Git Gateway aktivieren
 
-### Schritt 3 — Secrets im GitHub-Repo hinterlegen
+1. **Identity → Services → Git Gateway → Enable Git Gateway**
+2. Netlify autorisiert sich gegen GitHub und darf Commits in dein Repo schreiben.
 
-1. Öffne https://github.com/tobiaskammer-de/tina-playground-unesco/settings/secrets/actions
-2. „New repository secret" klicken, jeweils eintragen:
-   - Name: `TINA_PUBLIC_CLIENT_ID`, Value: (deine Client ID)
-   - Name: `TINA_TOKEN`, Value: (dein Token)
+### Schritt 4 — Dich selbst einladen
 
-### Schritt 4 — Deployment neu auslösen
+1. **Identity → Invite users** → eigene E-Mail eintragen
+2. Mail oeffnen → Link klicken → Passwort setzen (bzw. via GitHub einloggen)
 
-1. Entweder: https://github.com/tobiaskammer-de/tina-playground-unesco/actions → „Deploy Tina-Playground to GitHub Pages" → „Run workflow"
-2. Oder: einen kleinen Commit auf `main` pushen
-3. ~2 Min warten, bis das Deploy fertig ist
+### Schritt 5 — Editor benutzen
 
-### Schritt 5 — Browser-Editor nutzen
+Auf der Netlify-URL `/admin/` aufrufen, einloggen, Bloecke bearbeiten, speichern.
+Decap commitet direkt nach `main` auf GitHub → GitHub-Pages-Build laeuft an, Netlify rebuildet ebenfalls.
 
-Öffne im Browser:
-
-**https://tobiaskammer-de.github.io/tina-playground-unesco/admin-tina**
-
-- Mit GitHub einloggen (einmalig)
-- Collection „Seiten" → `index`
-- Blöcke bearbeiten, speichern
-- Tina commitet direkt zu `main` → Seite wird ~2 Min später aktualisiert
-
-Zweiten Editor einladen: in Tina Cloud unter „Team Members".
-
-## GitHub Pages aktivieren (falls noch nicht passiert)
+## GitHub Pages aktivieren (falls noch nicht)
 
 1. https://github.com/tobiaskammer-de/tina-playground-unesco/settings/pages
 2. „Source": **GitHub Actions**
-3. Speichern — ab jetzt deployt jedes Merge zu main automatisch
 
 ## Struktur
 
 ```
 src/
-  content/pages/          Markdown-Dateien pro Seite
-    index.md             Startseite (aus Blöcken)
-  layouts/BaseLayout.astro Header + Footer + CD-Tokens
-  components/PageHero.astro Hero-Komponente
-  pages/[...slug].astro   Dynamischer Block-Renderer
-tina/config.ts            Schema mit 6 Blocktypen
-.github/workflows/deploy.yml  CI/CD zu GitHub Pages
+  content/pages/             Markdown-Dateien pro Seite
+  layouts/BaseLayout.astro   Header/Footer + Identity-Widget
+  components/PageHero.astro
+  pages/[...slug].astro      Dynamischer Block-Renderer
+public/admin/                Decap CMS Admin-UI
+  index.html
+  config.yml                 Schema (6 Blocktypen, Discriminator: _template)
+netlify.toml                 Build-Config fuer Netlify
+.github/workflows/deploy.yml CI/CD zu GitHub Pages
 ```
 
 ## Die sechs Blocktypen
 
-1. **Hero** — großer Titel-Block (dunkel/hell, optional mit Bild)
-2. **Zweispaltiger Text** — Überschrift + 2 Absätze
-3. **Kartenraster (3 Karten)** — Kicker, Titel, Text pro Karte
-4. **Zitat-Band** — Petrol, zentriert, mit Quellenangabe
-5. **Call-to-Action** — Überschrift, Text, Button
-6. **Bildergalerie** — 3 Bilder mit Alt-Text und Caption
+1. **Hero** — Titel + Lead, optional Bild
+2. **Zwei-Spalten-Text** — Ueberschrift + 2 Absaetze
+3. **Kartenraster** — Liste von Karten (Kicker, Titel, Text)
+4. **Zitat** — grosses Zitat mit Quelle
+5. **Call-to-Action** — Ueberschrift, Text, Button
+6. **Galerie** — Liste von Bildern mit Alt + Caption
 
-Mehr Blocktypen hinzufügen: `tina/config.ts` erweitern, Renderer in `src/pages/[...slug].astro` ergänzen.
+Neue Blocktypen: `public/admin/config.yml` erweitern + Renderer in `src/pages/[...slug].astro` ergaenzen.
 
 ## Kosten
 
-- **Local-Modus:** 0 €
+- **Lokaler Modus:** 0 €
 - **GitHub Pages:** 0 €
-- **Tina Cloud Free Tier:** 0 € (bis 2 Editoren, 1 Projekt)
-- **Tina Cloud Paid:** ab 29 €/Monat (mehr Editoren, Branching, Backups)
+- **Netlify Free Tier:** 0 € (100 GB/Monat, 300 Build-Minuten, 1.000 Identity-User)

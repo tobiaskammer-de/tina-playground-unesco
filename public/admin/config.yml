@@ -1,0 +1,96 @@
+backend:
+  name: git-gateway
+  branch: main
+
+# Lokaler Test: `npx decap-server` parallel zu `npm run dev` starten,
+# dann mit `local_backend: true` ohne Login schreiben.
+local_backend: true
+
+media_folder: "public/uploads"
+public_folder: "/uploads"
+
+# Beim Eingang im CMS: Discriminator-Feld f&uuml;r Block-Listen heisst "_template"
+# (Astro-Template liest block._template aus).
+
+collections:
+  - name: "pages"
+    label: "Seiten"
+    label_singular: "Seite"
+    folder: "src/content/pages"
+    create: true
+    slug: "{{slug}}"
+    extension: "md"
+    format: "yaml-frontmatter"
+    summary: "{{title}}"
+    fields:
+      - { name: "title", label: "Titel", widget: "string" }
+      - { name: "description", label: "Beschreibung", widget: "string", required: false }
+      - name: "blocks"
+        label: "Bloecke"
+        label_singular: "Block"
+        widget: "list"
+        types_key: "_template"
+        types:
+          - name: "hero"
+            label: "Hero"
+            widget: "object"
+            fields:
+              - name: "variant"
+                label: "Variante"
+                widget: "select"
+                options: ["feature", "compact"]
+                default: "feature"
+              - { name: "eyebrow", label: "Eyebrow", widget: "string", required: false }
+              - { name: "title", label: "Titel", widget: "string" }
+              - { name: "lede", label: "Lead-Text", widget: "text", required: false }
+              - { name: "image", label: "Bild", widget: "image", required: false }
+
+          - name: "textTwoCol"
+            label: "Zwei Spalten Text"
+            widget: "object"
+            fields:
+              - { name: "heading", label: "Ueberschrift", widget: "string", required: false }
+              - { name: "left", label: "Linke Spalte", widget: "text", required: false }
+              - { name: "right", label: "Rechte Spalte", widget: "text", required: false }
+
+          - name: "cardGrid"
+            label: "Kartenraster"
+            widget: "object"
+            fields:
+              - { name: "heading", label: "Ueberschrift", widget: "string", required: false }
+              - name: "cards"
+                label: "Karten"
+                widget: "list"
+                fields:
+                  - { name: "kicker", label: "Kicker", widget: "string", required: false }
+                  - { name: "title", label: "Titel", widget: "string" }
+                  - { name: "text", label: "Text", widget: "text", required: false }
+
+          - name: "quote"
+            label: "Zitat"
+            widget: "object"
+            fields:
+              - { name: "quote", label: "Zitat", widget: "text" }
+              - { name: "cite", label: "Quelle", widget: "string", required: false }
+
+          - name: "cta"
+            label: "Call-to-Action"
+            widget: "object"
+            fields:
+              - { name: "heading", label: "Ueberschrift", widget: "string", required: false }
+              - { name: "text", label: "Text", widget: "text", required: false }
+              - { name: "buttonText", label: "Button-Text", widget: "string", required: false }
+              - { name: "buttonUrl", label: "Button-URL", widget: "string", required: false }
+
+          - name: "gallery"
+            label: "Galerie"
+            widget: "object"
+            fields:
+              - { name: "heading", label: "Ueberschrift", widget: "string", required: false }
+              - name: "images"
+                label: "Bilder"
+                widget: "list"
+                fields:
+                  - { name: "src", label: "Bild", widget: "image" }
+                  - { name: "alt", label: "Alt-Text", widget: "string", required: false }
+                  - { name: "caption", label: "Bildunterschrift", widget: "string", required: false }
