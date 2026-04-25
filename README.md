@@ -1,6 +1,6 @@
 # CMS-Playground — UNESCO-Schule Essen
 
-Test-Projekt zum Evaluieren von **Decap CMS** (ehemals Netlify CMS), im Corporate Design der UNESCO-Schule Essen.
+Test-Projekt zum Evaluieren von **Sveltia CMS** (Drop-in-Replacement fuer Decap CMS mit modernerer UI), im Corporate Design der UNESCO-Schule Essen.
 
 ## Drei Arten, das zu nutzen
 
@@ -18,7 +18,7 @@ Browser:
 - **Website:** http://localhost:4321/tina-playground-unesco/
 - **Editor:** http://localhost:4321/tina-playground-unesco/admin/
 
-`local_backend: true` ist in `public/admin/config.yml` gesetzt — der Decap-Proxy schreibt direkt in die lokalen Markdown-Dateien, kein Login noetig.
+`local_backend: true` ist in `public/admin/config.yml` gesetzt — der `decap-server`-Proxy (von Sveltia genauso unterstuetzt) schreibt direkt in die lokalen Markdown-Dateien, kein Login noetig.
 
 ### 2. Live auf GitHub Pages (read-only)
 
@@ -58,7 +58,7 @@ Netlify hostet die Site zusaetzlich, liefert per **Identity + Git Gateway** den 
 ### Schritt 5 — Editor benutzen
 
 Auf der Netlify-URL `/admin/` aufrufen, einloggen, Bloecke bearbeiten, speichern.
-Decap commitet direkt nach `main` auf GitHub → GitHub-Pages-Build laeuft an, Netlify rebuildet ebenfalls.
+Sveltia commitet direkt nach `main` auf GitHub → GitHub-Pages-Build laeuft an, Netlify rebuildet ebenfalls.
 
 ## GitHub Pages aktivieren (falls noch nicht)
 
@@ -73,7 +73,7 @@ src/
   layouts/BaseLayout.astro   Header/Footer + Identity-Widget
   components/PageHero.astro
   pages/[...slug].astro      Dynamischer Block-Renderer
-public/admin/                Decap CMS Admin-UI
+public/admin/                Sveltia CMS Admin-UI
   index.html
   config.yml                 Schema (6 Blocktypen, Discriminator: _template)
 netlify.toml                 Build-Config fuer Netlify

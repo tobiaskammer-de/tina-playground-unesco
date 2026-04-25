@@ -29,7 +29,7 @@ collections:
         label: "Bloecke"
         label_singular: "Block"
         widget: "list"
-        types_key: "_template"
+        typeKey: "_template"
         types:
           - name: "hero"
             label: "Hero"
